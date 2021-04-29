@@ -2,15 +2,19 @@ import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-import SearchBar from "./components/search";
-import SearchResults from "./components/searchResults";
+import SearchBar from "./components/Search";
+import SearchResults from "./components/SearchResults";
+import AddNomination from "./components/AddNomination";
+import RemoveNomination from "./components/RemoveNomination";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [moviesList, setMovies] = useState([]);
-  const [isLoading, setisLoading] = useState(true);
   const [searchValue, setsearchValue] = useState("");
   const [notFound, setnotFound] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [nomination, setNomination] = useState([]);
+  const [displayNotification, setDisplayNotification] = useState(false);
 
   const getSearchResults = async (searchValue) => {
     const url = ` http://www.omdbapi.com/?s=${searchValue}&apikey=${process.env.REACT_APP_API_KEY}`;
@@ -29,29 +33,70 @@ const App = () => {
 
   useEffect(() => {
     getSearchResults(searchValue);
-    setisLoading(false);
   }, [searchValue]);
 
-  if (isLoading) {
-    return (
-      <div>
-        <h1>Loading...</h1>
-      </div>
+  useEffect(() => {
+    setDisplayNotification(false);
+    const PreviousNominatedList = JSON.parse(
+      localStorage.getItem("Nominated-Movies")
     );
-  }
+    setNomination(PreviousNominatedList);
+  }, []);
+
+  useEffect(() => {
+    if (nomination.length === 5 && moviesList.length !== 0) {
+      setDisplayNotification(true);
+    }
+  }, [nomination, moviesList]);
+
+  const closeNotification = () => {
+    setDisplayNotification(false);
+  };
+  const saveToStorage = (movie) => {
+    localStorage.setItem("Nominated-Movies", JSON.stringify(movie));
+  };
+  const nominateMovie = (selectedMovie) => {
+    const nominationList = [...nomination, selectedMovie];
+    setNomination(nominationList);
+    saveToStorage(nominationList);
+  };
+
+  const removeNominate = (removeMovie) => {
+    const newNominationList = nomination.filter(
+      (nominate) => nominate.imdbID !== removeMovie.imdbID
+    );
+    setNomination(newNominationList);
+    saveToStorage(newNominationList);
+  };
+
   return (
     <div className="banner-top">
       <h1> The Shoppies</h1>
-
       <SearchBar searchValue={searchValue} setsearchValue={setsearchValue} />
       <h2> Movies</h2>
-      <div className="container-fluid">
-        <div className="row">
+
+      <div className="container-fluid movie-display">
+        <div className="row align-items-center mt-4 mb-4">
           <SearchResults
-            className="section"
             movies={moviesList}
             notFound={notFound}
             errorMessage={errorMessage}
+            NominationClick={nominateMovie}
+            AddNominationBanner={AddNomination}
+          />
+        </div>
+
+        {displayNotification ? (
+          <Notification closeNotification={closeNotification} />
+        ) : null}
+      </div>
+      <h2> Nominations</h2>
+      <div className="container-fluid movie-display">
+        <div className="row align-items-center mt-4 mb-4">
+          <SearchResults
+            movies={nomination}
+            NominationClick={removeNominate}
+            AddNominationBanner={RemoveNomination}
           />
         </div>
       </div>

@@ -6,7 +6,6 @@ const SearchBar = (props) => {
     <div className="profile-textboxes">
       <input
         type="text"
-        className=""
         value={props.value}
         onChange={(event) => props.setsearchValue(event.target.value)}
         placeholder="Search for Movie..."

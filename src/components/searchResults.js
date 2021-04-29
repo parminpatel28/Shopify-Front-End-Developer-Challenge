@@ -10,23 +10,31 @@ const searchResult = (props) => {
       </div>
     );
   }
+  const Nomination = props.AddNominationBanner;
+
   return (
-    <div className="main section">
-      {props.movies.map((movie, index) => (
-        <div className="image-container">
-          <div className="">
+    <>
+      {props.movies.map((movie) => (
+        <div className="d-flex justify-content-start m-3 image-container">
+          <div>
             <img
               src={movie.Poster}
               alt="movie"
-              width="100px"
-              height="200px"
+              height="500px"
+              width="250px"
             ></img>
+            <div
+              onClick={() => props.NominationClick(movie)}
+              className="overlay d-flex align-items-center justify-content-center"
+            >
+              <Nomination />
+            </div>
             <h3> {movie.Title}</h3>
             <h4> {movie.Year}</h4>
           </div>
         </div>
       ))}
-    </div>
+    </>
   );
 };
 
