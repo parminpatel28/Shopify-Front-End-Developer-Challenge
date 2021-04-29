@@ -7,7 +7,6 @@ import SearchBar from "./components/Search";
 import AddNomination from "./components/AddNomination";
 import RemoveNomination from "./components/RemoveNomination";
 import Notification from "./components/Notification";
-import axios from "axios";
 
 export default function App() {
   const [moviesList, setMovies] = useState([]);
@@ -19,10 +18,11 @@ export default function App() {
   const [displayNotification, setDisplayNotification] = useState(false);
 
   const getSearchResults = async (searchValue) => {
-    const url = ` https://www.omdbapi.com/?s=${searchValue}&apikey=${process.env.REACT_APP_API_KEY}`;
+    const url = `https://www.omdbapi.com/?s=${searchValue}&apikey=${process.env.REACT_APP_API_KEY}`;
     const data = await fetch(url);
     const response = await data.json();
 
+    console.log(url);
     if (response.Search && response.Response === "True") {
       setMovies(response.Search);
       setnotFound(false);
