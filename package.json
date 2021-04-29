@@ -46,6 +46,5 @@
   "main": "index.js",
   "repository": "https://github.com/parminpatel28/The-shoppies.git",
   "author": "parminpatel28 <ps26pate@uwaterloo.ca>",
-  "license": "MIT",
-  “homepage”: “http://sabesansathananthan.github.io/React-Deploy",
+  "license": "MIT"
 }
