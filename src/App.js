@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 import SearchResults from "./components/SearchResult";
-import SearchBar from "./components/Search";
+import SearchBar from "./components/search";
 import AddNomination from "./components/AddNomination";
 import RemoveNomination from "./components/RemoveNomination";
 import Notification from "./components/Notification";
