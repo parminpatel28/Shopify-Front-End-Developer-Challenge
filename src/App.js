@@ -3,21 +3,23 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 import SearchResults from "./components/SearchResult";
-import SearchBar from "./components/search";
+import SearchBar from "./components/Search";
 import AddNomination from "./components/AddNomination";
 import RemoveNomination from "./components/RemoveNomination";
 import Notification from "./components/Notification";
+import axios from "axios";
 
-const App = () => {
+export default function App() {
   const [moviesList, setMovies] = useState([]);
   const [searchValue, setsearchValue] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [notFound, setnotFound] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [nomination, setNomination] = useState([]);
   const [displayNotification, setDisplayNotification] = useState(false);
 
   const getSearchResults = async (searchValue) => {
-    const url = ` http://www.omdbapi.com/?s=${searchValue}&apikey=${process.env.REACT_APP_API_KEY}`;
+    const url = ` https://www.omdbapi.com/?s=${searchValue}&apikey=${process.env.REACT_APP_API_KEY}`;
     const data = await fetch(url);
     const response = await data.json();
 
@@ -33,6 +35,7 @@ const App = () => {
 
   useEffect(() => {
     getSearchResults(searchValue);
+    setIsLoading(false);
   }, [searchValue]);
 
   useEffect(() => {
@@ -69,39 +72,45 @@ const App = () => {
     saveToStorage(newNominationList);
   };
 
-  return (
-    <div className="banner-top">
-      <h1> The Shoppies</h1>
-      <SearchBar searchValue={searchValue} setsearchValue={setsearchValue} />
-      <h2> Movies</h2>
-
-      <div className="container-fluid movie-display">
-        <div className="row align-items-center mt-4 mb-4">
-          <SearchResults
-            movies={moviesList}
-            notFound={notFound}
-            errorMessage={errorMessage}
-            NominationClick={nominateMovie}
-            AddNominationBanner={AddNomination}
-          />
-        </div>
-
-        {displayNotification ? (
-          <Notification closeNotification={closeNotification} />
-        ) : null}
+  if (isLoading) {
+    return (
+      <div>
+        <h1> Loading...</h1>
       </div>
-      <h2> Nominations</h2>
-      <div className="container-fluid movie-display">
-        <div className="row align-items-center mt-4 mb-4">
-          <SearchResults
-            movies={nomination}
-            NominationClick={removeNominate}
-            AddNominationBanner={RemoveNomination}
-          />
+    );
+  } else {
+    return (
+      <div className="banner-top">
+        <h1> The Shoppies</h1>
+        <SearchBar searchValue={searchValue} setsearchValue={setsearchValue} />
+        <h2> Movies</h2>
+
+        <div className="container-fluid movie-display">
+          <div className="row align-items-center mt-4 mb-4">
+            <SearchResults
+              movies={moviesList}
+              notFound={notFound}
+              errorMessage={errorMessage}
+              NominationClick={nominateMovie}
+              AddNominationBanner={AddNomination}
+            />
+          </div>
+
+          {displayNotification ? (
+            <Notification closeNotification={closeNotification} />
+          ) : null}
+        </div>
+        <h2> Nominations</h2>
+        <div className="container-fluid movie-display">
+          <div className="row align-items-center mt-4 mb-4">
+            <SearchResults
+              movies={nomination}
+              NominationClick={removeNominate}
+              AddNominationBanner={RemoveNomination}
+            />
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
-
-export default App;
+    );
+  }
+}
