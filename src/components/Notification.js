@@ -5,6 +5,7 @@ import "../App.css";
 export default function Notification(props) {
   return (
     <Alert
+      className="banner-top"
       variant="success"
       onClose={() => props.closeNotification()}
       dismissible

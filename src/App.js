@@ -9,21 +9,20 @@ import RemoveNomination from "./components/RemoveNomination";
 import Notification from "./components/Notification";
 
 export default function App() {
+  //state Declaration
   const [moviesList, setMovies] = useState([]);
   const [searchValue, setsearchValue] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [notFound, setnotFound] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [nomination, setNomination] = useState([]);
   const [displayNotification, setDisplayNotification] = useState(false);
+  const [notFound, setnotFound] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const getSearchResults = async (searchValue) => {
     const url = `https://www.omdbapi.com/?s=${searchValue}&apikey=${process.env.REACT_APP_API_KEY}`;
     const data = await fetch(url);
     const response = await data.json();
 
-    console.log(url);
-    if (response.Search && response.Response === "True") {
+    if (response.Search) {
       setMovies(response.Search);
       setnotFound(false);
     } else {
@@ -35,82 +34,82 @@ export default function App() {
 
   useEffect(() => {
     getSearchResults(searchValue);
-    setIsLoading(false);
   }, [searchValue]);
-
-  useEffect(() => {
-    setDisplayNotification(false);
-    const PreviousNominatedList = JSON.parse(
-      localStorage.getItem("Nominated-Movies")
-    );
-    setNomination(PreviousNominatedList);
-  }, []);
 
   useEffect(() => {
     if (nomination.length === 5 && moviesList.length !== 0) {
       setDisplayNotification(true);
     }
-  }, [nomination, moviesList]);
+  }, [moviesList, nomination]);
 
-  const closeNotification = () => {
-    setDisplayNotification(false);
-  };
-  const saveToStorage = (movie) => {
-    localStorage.setItem("Nominated-Movies", JSON.stringify(movie));
-  };
-  const nominateMovie = (selectedMovie) => {
-    const nominationList = [...nomination, selectedMovie];
-    setNomination(nominationList);
-    saveToStorage(nominationList);
-  };
+  useEffect(() => {
+    const movieFavourites = JSON.parse(
+      localStorage.getItem("Nominated-Movies")
+    );
 
-  const removeNominate = (removeMovie) => {
+    if (movieFavourites) {
+      setNomination(movieFavourites);
+    }
+  }, []);
+
+  function saveToStorage(movie) {
+    return localStorage.setItem("Nominated-Movies", JSON.stringify(movie));
+  }
+
+  function nominateMovie(movie) {
+    const newNomination = [...nomination, movie];
+    setNomination(newNomination);
+    saveToStorage(newNomination);
+  }
+
+  function removeNominate(removeMovie) {
     const newNominationList = nomination.filter(
       (nominate) => nominate.imdbID !== removeMovie.imdbID
     );
     setNomination(newNominationList);
     saveToStorage(newNominationList);
-  };
+  }
 
-  if (isLoading) {
-    return (
+  function closeNotification() {
+    setDisplayNotification(false);
+  }
+
+  return (
+    <div className="banner-top">
       <div>
-        <h1> Loading...</h1>
-      </div>
-    );
-  } else {
-    return (
-      <div className="banner-top">
         <h1> The Shoppies</h1>
         <SearchBar searchValue={searchValue} setsearchValue={setsearchValue} />
+      </div>
+      <div>
         <h2> Movies</h2>
+      </div>
 
-        <div className="container-fluid movie-display">
-          <div className="row align-items-center mt-4 mb-4">
-            <SearchResults
-              movies={moviesList}
-              notFound={notFound}
-              errorMessage={errorMessage}
-              NominationClick={nominateMovie}
-              AddNominationBanner={AddNomination}
-            />
-          </div>
-
-          {displayNotification ? (
-            <Notification closeNotification={closeNotification} />
-          ) : null}
-        </div>
-        <h2> Nominations</h2>
-        <div className="container-fluid movie-display">
-          <div className="row align-items-center mt-4 mb-4">
-            <SearchResults
-              movies={nomination}
-              NominationClick={removeNominate}
-              AddNominationBanner={RemoveNomination}
-            />
-          </div>
+      <div className="container-fluid movie-display">
+        <div className="row align-items-center mt-4 mb-4">
+          <SearchResults
+            movies={moviesList}
+            NominationClick={nominateMovie}
+            NominationBanner={AddNomination}
+            notFound={notFound}
+            errorMessage={errorMessage}
+          />
         </div>
       </div>
-    );
-  }
+
+      {displayNotification ? (
+        <Notification closeNotification={closeNotification} />
+      ) : null}
+
+      <h2> Nominations</h2>
+      <div className="container-fluid movie-display">
+        <div className="row">
+          <SearchResults
+            movies={nomination}
+            NominationClick={removeNominate}
+            NominationBanner={RemoveNomination} // comes from the RemoveNomination Component
+          />
+        </div>
+      </div>
+    </div>
+  );
 }

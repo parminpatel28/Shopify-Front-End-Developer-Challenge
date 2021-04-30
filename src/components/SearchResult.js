@@ -10,18 +10,20 @@ const searchResult = (props) => {
       </div>
     );
   }
-  const Nomination = props.AddNominationBanner;
-
+  const Nomination = props.NominationBanner;
   return (
     <>
-      {props.movies.map((movie) => (
-        <div className="d-flex justify-content-start m-3 image-container">
+      {props.movies.map((movie, key) => (
+        <div
+          className="image-container d-flex justify-content-start m-3"
+          key={key}
+        >
           <div>
             <img
               src={movie.Poster}
               alt="movie"
               height="500px"
-              width="250px"
+              width="300px"
             ></img>
             <div
               onClick={() => props.NominationClick(movie)}
@@ -29,8 +31,8 @@ const searchResult = (props) => {
             >
               <Nomination />
             </div>
-            <h3> {movie.Title}</h3>
-            <h4> {movie.Year}</h4>
+            <h3>{movie.Title}</h3>
+            <h4>{movie.Year}</h4>
           </div>
         </div>
       ))}
