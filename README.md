@@ -1,4 +1,18 @@
-# Getting Started with Create React App
+# This Shoppies(Shopify Challenge)
+
+The project is deployed at [The-Shoppies](https://the-shoppies-parmin-patel.netlify.app)
+
+## Extra Features
+
+- The nomination list gets saved when the user leaves the page 
+- The site changes themes based on if the user is on light mode or dark mode
+## Dark Mode Preview
+![Screen Shot 2021-05-01 at 3 12 06 PM](https://user-images.githubusercontent.com/66801831/116792594-9e6e3500-aa8f-11eb-8c81-60281f0b88b3.png)
+## Light Mode Preview
+![Screen Shot 2021-05-01 at 3 12 47 PM](https://user-images.githubusercontent.com/66801831/116792618-cb224c80-aa8f-11eb-9e1d-d4491b487147.png)
+
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
