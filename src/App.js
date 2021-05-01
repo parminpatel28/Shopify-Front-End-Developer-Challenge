@@ -57,9 +57,11 @@ export default function App() {
   }
 
   function nominateMovie(movie) {
-    const newNomination = [...nomination, movie];
-    setNomination(newNomination);
-    saveToStorage(newNomination);
+    if (!nomination.includes(movie)) {
+      const newNomination = [...nomination, movie];
+      setNomination(newNomination);
+      saveToStorage(newNomination);
+    }
   }
 
   function removeNominate(removeMovie) {
@@ -88,6 +90,7 @@ export default function App() {
         <div className="row align-items-center mt-4 mb-4">
           <SearchResults
             movies={moviesList}
+            nomination={nomination}
             NominationClick={nominateMovie}
             NominationBanner={AddNomination}
             notFound={notFound}
